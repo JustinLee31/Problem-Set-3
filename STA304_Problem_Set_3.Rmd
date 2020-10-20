@@ -1,0 +1,107 @@
+---
+title: "Marital Status and Age Influence on the Number of Children in a Family "
+author: "Justin Lee"
+date: "19/10/2020"
+abstract: "A multilinear regression model was applied to the 2017 Canadian General Social Survey results where total children in a family was viewed as the dependent variable. Marital status and age at first birth were the predictors.  Results showed both marital status and age at first birth had a relationship with total children in a family. A younger age at first birth and marital status of married showed a higher likelihood of having more total children in a family."
+output: pdf_document
+---
+
+# Introdcution
+  The following report aims to draw a statistical relationship with the total children in a family and its variables marital status and age at first birth. A multilinear regression model using R was applied to the 2017 Canadian General Social Survey Data where marital status and age at first birth were the relevant predictors. This research is important for discussions  about family size and its corresponding affects. Knowing the cause and predictable partners for individuals that produce many children is helpful in understand community growth and size. Especially in a global climate where global warming is a prevalent issue and human population growth is staggering, this report may provide benefit to those discussions. 
+  
+
+# Data
+  The main source of the data used is the 2017 Canadian General Social on the Family. This was a sample survey conducted by Statistics Canada with cross sectional design whose target population were individuals 15 years or older and living in the 10 provinces of Canada. As a result, individuals in the Northwest Territories, Nunavut, and Yukon were not a part of the population. The data frame consisted of the Statistics Canada’s Address Register with the addition of telephone numbers. Data was collected through telephone. 
+  A copy of the cleaned  2017 GSS data used can be found [HERE](https://github.com/JustinLee31/Problem-Set-3/blob/main/gss.csv), and its orignial form can be found [HERE](https://github.com/JustinLee31/Problem-Set-3/blob/main/AAwBZt6o.csv)
+
+
+# Model
+
+  Through analyzing this data, we are interested in explaining the total children in a family based on marital status and age at first birth. This brings a probability model that represents the likelihood that the total children in a family is a specific number with the following:
+  
+  
+$$Pr(y_i = 1) = \mbox{logit}^{-1}(\alpha^{Marital Status}_{a[i]}+ \alpha^{Age First Birth}_{b[i]})$$ 
+where the $\alpha$ are Marital Status and Age at First Birth of individual. Symbols $a{i}$ corresponds to the marital status to which an individual $i$ belongs to. These are shown as:
+
+
+$$\alpha^{Marital Status}_a \sim N(0,\sigma_{Marital Status})\mbox{ for }a = 1,2,...A$$
+Symbols $b{i}$ corresponds to the age at first birth of an individual $i$. These are shown as:
+
+$$\alpha^{Marital Status}_b \sim N(0,\sigma_{AgeFirstBirth})\mbox{ for }b = 1,2,...A$$
+
+```{r, include=FALSE}
+
+#relevant libraries to make regression results easier to us and manipulate
+library(tidyverse)
+library(broom)
+library(here)
+
+```
+
+```{r, include=FALSE}
+resdata <- read_csv("gss.csv") #reading data to be used in model
+head(resdata) #showing first few rows of data
+```
+```{r, include=FALSE}
+summary(resdata) #summary of overall selected data set
+```
+A multivariate multiple linear regression model was formed using R.
+
+```{r, include=TRUE}
+
+datamodel <- lm(resdata$total_children ~  resdata$marital_status + resdata$age_at_first_birth, 
+                data=resdata)  #fitting regression model to area of interest
+
+```
+
+
+
+# Results
+
+Results with the multiple linear regression model produced the following data model summary. 
+```{r, echo=FALSE}
+broom::tidy(datamodel) #displaying data summary
+
+par(mfrow=c(2,3))
+plot(datamodel)
+
+```
+
+
+# Discussion
+```{r, echo=FALSE}
+summary(datamodel)
+```
+
+  From the additional summary statistics we can see the significance of each predictors marital status and age at first birth. Each significance code ranges from 0 to 1 is listed based on the number of "*" next to each variable. We see that the marital status married, Single, never married and Widowed all have the near 0 code with a almost 0 p-value. This indicates a strong relationship in indicating the probability of a particular number of children in a family based on these marital status'. In addition, age at first birth is also indicated as good predictor.
+  
+
+
+
+Additional relevant R-code can be found [HERE](https://github.com/JustinLee31/Problem-Set-3)
+
+# References
+
+- David Robinson, Alex Hayes and Simon Couch (2020). broom: Convert Statistical Objects
+  into Tidy Tibbles. R package version 0.7.1. https://CRAN.R-project.org/package=broom
+- Kirill Müller and Hadley Wickham (2020). tibble: Simple Data Frames. 
+  https://tibble.tidyverse.org/,   https://github.com/tidyverse/tibble.
+- Hanretty, Chris, (2019), ‘An introduction to multilevel regression and post-stratification for
+  estimating constituency opinion’, Political Studies Review, 
+  https://doi.org/10.1177/1478929919864773
+- Müller, Kirill. (2017).Here: A Simpler Way to Find Your     
+  Files.https://CRAN.R-project.org/package=here.
+- R Core Team (2020). R: A language and environment for statistical computing. R Foundation for
+  Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
+- Robinson, David, Alex Hayes, and Simon Couch. (2020).Broom: Convert Statistical Objects into 
+  Tibbles.https://CRAN.R-project.org/package=broom.
+- Rohan Alexander and Sam Caetano (2020). 2017 GSS Data Cleaning.     
+  https://q.utoronto.ca/courses/184062/files/9419005/download?wrap=1
+- Statistics Canada (2017). General Social Survey. 
+  https://gssdataexplorer.norc.org/pages/show?page=gss%2Fhelp_variables
+- Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686,
+  https://doi.org/10.21105/joss.01686
+
+
+
+
